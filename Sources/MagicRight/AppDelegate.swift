@@ -98,6 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try syncDirectory(from: scriptsSource, to: scriptsDestination, executable: true)
             try copyDirectoryContents(from: templatesSource, to: scriptsDestination, executable: false)
+            MenuActionConfiguration.writeEnabledIDs(MenuActionConfiguration.enabledIDs())
             NSLog("[MagicRight] Installed scripts to \(scriptsDestination.path)")
         } catch {
             NSLog("[MagicRight] Failed to install scripts: \(error)")

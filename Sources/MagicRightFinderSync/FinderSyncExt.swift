@@ -4,6 +4,7 @@ import FinderSync
 @objc(FinderSyncExt)
 final class FinderSyncExt: FIFinderSync {
     private struct Service {
+        let id: String
         let title: String
         let filename: String
         let symbol: String
@@ -11,16 +12,16 @@ final class FinderSyncExt: FIFinderSync {
     }
 
     private let services: [Service] = [
-        Service(title: "生成字幕", filename: "gen_subtitles.sh", symbol: "", allowsEmpty: false),
-        Service(title: "新建文本文件", filename: "new_txt.sh", symbol: "", allowsEmpty: false),
-        Service(title: "新建 Markdown 文件", filename: "new_md.sh", symbol: "", allowsEmpty: false),
-        Service(title: "新建 Word 文档", filename: "new_docx.sh", symbol: "", allowsEmpty: false),
-        Service(title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbol: "", allowsEmpty: false),
-        Service(title: "用 VS Code 打开", filename: "open_vscode.sh", symbol: "", allowsEmpty: false),
-        Service(title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbol: "", allowsEmpty: false),
-        Service(title: "复制路径", filename: "copy_path.sh", symbol: "", allowsEmpty: false),
-        Service(title: "剪切", filename: "cut_items.sh", symbol: "", allowsEmpty: true),
-        Service(title: "粘贴", filename: "paste_cut_items.sh", symbol: "", allowsEmpty: false)
+        Service(id: "subtitles", title: "生成字幕", filename: "gen_subtitles.sh", symbol: "", allowsEmpty: false),
+        Service(id: "new-text", title: "新建文本文件", filename: "new_txt.sh", symbol: "", allowsEmpty: false),
+        Service(id: "new-markdown", title: "新建 Markdown 文件", filename: "new_md.sh", symbol: "", allowsEmpty: false),
+        Service(id: "new-word", title: "新建 Word 文档", filename: "new_docx.sh", symbol: "", allowsEmpty: false),
+        Service(id: "open-ghostty", title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbol: "", allowsEmpty: false),
+        Service(id: "open-vscode", title: "用 VS Code 打开", filename: "open_vscode.sh", symbol: "", allowsEmpty: false),
+        Service(id: "git-commit-push", title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbol: "", allowsEmpty: false),
+        Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "", allowsEmpty: false),
+        Service(id: "cut", title: "剪切", filename: "cut_items.sh", symbol: "", allowsEmpty: true),
+        Service(id: "paste", title: "粘贴", filename: "paste_cut_items.sh", symbol: "", allowsEmpty: false)
     ]
 
     private static let logQueue = DispatchQueue(label: "local.elidev.MagicRight.findersync.log")
@@ -39,13 +40,15 @@ final class FinderSyncExt: FIFinderSync {
         let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
         let tint: NSColor = isDark ? .white : .black
 
-        for (idx, service) in services.enumerated() {
+        let visibleServices = services.filter { enabledServiceIDs.contains($0.id) }
+
+        for service in visibleServices {
             let item = NSMenuItem(
                 title: service.title,
                 action: #selector(runScript(_:)),
                 keyEquivalent: ""
             )
-            item.tag = idx
+            item.tag = services.firstIndex { $0.id == service.id } ?? -1
             if !service.symbol.isEmpty, let image = tintedSymbol(service.symbol, color: tint) {
                 item.image = image
             }
@@ -59,6 +62,23 @@ final class FinderSyncExt: FIFinderSync {
         parent.submenu = submenu
         menu.addItem(parent)
         return menu
+    }
+
+    private var enabledServiceIDs: Set<String> {
+        do {
+            let scriptsURL = try FileManager.default.url(
+                for: .applicationScriptsDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+            let configURL = scriptsURL.appendingPathComponent("menu-actions.json")
+            let data = try Data(contentsOf: configURL)
+            let ids = try JSONDecoder().decode([String].self, from: data)
+            return Set(ids)
+        } catch {
+            return Set(services.map(\.id))
+        }
     }
 
     private func tintedSymbol(_ name: String, color: NSColor) -> NSImage? {

@@ -15,11 +15,14 @@ final class MagicRightWindowController: NSObject, NSWindowDelegate {
 
         let hosting = NSHostingController(rootView: MagicRightView())
         let win = NSWindow(contentViewController: hosting)
-        win.title = "MagicRight"
+        let contentSize = NSSize(width: 720, height: 600)
+        let minimumContentSize = NSSize(width: 650, height: 540)
+
+        win.title = "右键菜单"
         win.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
         win.isReleasedWhenClosed = false
-        win.setContentSize(NSSize(width: 680, height: 520))
-        win.minSize = NSSize(width: 620, height: 460)
+        win.setContentSize(contentSize)
+        win.minSize = win.frameRect(forContentRect: NSRect(origin: .zero, size: minimumContentSize)).size
         win.center()
         win.delegate = self
         window = win

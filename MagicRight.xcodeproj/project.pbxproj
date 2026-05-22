@@ -16,6 +16,8 @@
 		95401E7378696CDFCAB3B76F /* MagicRightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C2A6A31BCAD0BB1B7C2F1 /* MagicRightView.swift */; };
 		A956D7BEB4A380DA2A07306C /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EE04436D5CF84663796FAF /* FinderSyncExt.swift */; };
 		BBB4D5BBAE64D26A82722008 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = B4DF337A063CE525F5578714 /* Templates */; };
+		DF69FDB74A785CE1DDE9466E /* WindowBackgroundBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */; };
+		FE7E1718AC968985559A4C90 /* MenuActionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64958F20322C2712EA1D017C /* MenuActionConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,12 +48,14 @@
 		50BDCA36A0FB14184EDE7A7A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		570C2A6A31BCAD0BB1B7C2F1 /* MagicRightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRightView.swift; sourceTree = "<group>"; };
 		5E6718CB9DF585C9133FC300 /* MagicRight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagicRight.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		64958F20322C2712EA1D017C /* MenuActionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuActionConfiguration.swift; sourceTree = "<group>"; };
 		68A96CB11700EA12C29A229A /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = Resources/Scripts; sourceTree = SOURCE_ROOT; };
 		70674DEF14A4058329AC6AEF /* MagicRightWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRightWindowController.swift; sourceTree = "<group>"; };
 		99D284C6F007745B0E9645D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9BB2866BC6FDBD084B36BE12 /* MagicRightFinderSync.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MagicRightFinderSync.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4DF337A063CE525F5578714 /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Templates; path = Resources/Templates; sourceTree = SOURCE_ROOT; };
 		C488B5D5D39641C35DB2D83D /* MagicRight.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = MagicRight.icon; sourceTree = "<group>"; };
+		C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBackgroundBlur.swift; sourceTree = "<group>"; };
 		E6EE04436D5CF84663796FAF /* FinderSyncExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSyncExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +93,8 @@
 				570C2A6A31BCAD0BB1B7C2F1 /* MagicRightView.swift */,
 				70674DEF14A4058329AC6AEF /* MagicRightWindowController.swift */,
 				50BDCA36A0FB14184EDE7A7A /* main.swift */,
+				64958F20322C2712EA1D017C /* MenuActionConfiguration.swift */,
+				C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */,
 			);
 			name = MagicRight;
 			path = Sources/MagicRight;
@@ -214,6 +220,8 @@
 				3CF60418FBB425DE1265DB11 /* AppDelegate.swift in Sources */,
 				95401E7378696CDFCAB3B76F /* MagicRightView.swift in Sources */,
 				5C18A71E692CAFB978F50239 /* MagicRightWindowController.swift in Sources */,
+				FE7E1718AC968985559A4C90 /* MenuActionConfiguration.swift in Sources */,
+				DF69FDB74A785CE1DDE9466E /* WindowBackgroundBlur.swift in Sources */,
 				042D6BDF00481CEC1348E7DC /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -299,7 +307,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = local.elidev.MagicRight;
 				PRODUCT_NAME = MagicRight;
 				SDKROOT = macosx;
@@ -320,7 +328,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = local.elidev.MagicRight.FinderSync;
 				PRODUCT_NAME = MagicRightFinderSync;
 				SDKROOT = macosx;
@@ -341,7 +349,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = local.elidev.MagicRight.FinderSync;
 				PRODUCT_NAME = MagicRightFinderSync;
 				SDKROOT = macosx;
@@ -362,7 +370,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = local.elidev.MagicRight;
 				PRODUCT_NAME = MagicRight;
 				SDKROOT = macosx;

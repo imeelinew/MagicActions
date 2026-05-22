@@ -1,72 +1,164 @@
 import SwiftUI
 
 struct MagicRightView: View {
-    private let scriptsPath = "~/Library/Application Scripts/local.elidev.MagicRight.FinderSync"
-    private let menuItems = [
-        "生成字幕",
-        "新建文本文件",
-        "新建 Markdown 文件",
-        "新建 Word 文档",
-        "用 Ghostty 打开",
-        "用 VS Code 打开",
-        "提交并推送当前仓库",
-        "复制路径",
-        "剪切",
-        "粘贴"
-    ]
+    @State private var selection: SettingsPage? = .contextMenu
+    @State private var enabledActionIDs = MenuActionConfiguration.enabledIDs()
+    @State private var searchText = ""
+    private let sidebarIconTileSize: Double = 22
+    private let sidebarIconSymbolSize: Double = 11
+    private let sidebarIconCornerRadius: Double = 6
+
+    enum SettingsPage: String, CaseIterable, Hashable, Identifiable {
+        case contextMenu
+
+        var id: String { rawValue }
+        var title: String { "右键菜单" }
+        var symbolName: String { "contextualmenu.and.cursorarrow" }
+        var iconGradient: LinearGradient {
+            LinearGradient(
+                colors: [Color(red: 1.0, green: 0.50, blue: 0.40), Color(red: 0.96, green: 0.28, blue: 0.24)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            header
-            Divider()
-            statusSection
-            actionsSection
-            Spacer(minLength: 0)
-        }
-        .padding(28)
-        .frame(minWidth: 620, minHeight: 460)
-    }
-
-    private var header: some View {
-        HStack(spacing: 16) {
-            Image(systemName: "pointer.arrow.ipad.rays")
-                .font(.system(size: 42, weight: .semibold))
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("MagicRight")
-                    .font(.largeTitle.weight(.semibold))
-                Text("Finder 右键扩展宿主")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private var statusSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label("Finder Sync 扩展已随应用打包", systemImage: "checkmark.seal.fill")
-            Label("菜单脚本会在启动时同步到 Application Scripts", systemImage: "folder.badge.gearshape")
-            Text(scriptsPath)
-                .font(.system(.callout, design: .monospaced))
-                .foregroundStyle(.secondary)
-                .textSelection(.enabled)
-        }
-        .font(.body)
-    }
-
-    private var actionsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("当前右键菜单")
-                .font(.title3.weight(.semibold))
-
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: 8)], alignment: .leading, spacing: 8) {
-                ForEach(menuItems, id: \.self) { item in
-                    Label(item, systemImage: "contextualmenu.and.cursorarrow")
-                        .font(.callout)
-                        .lineLimit(1)
+        NavigationSplitView {
+            List(selection: $selection) {
+                NavigationLink(value: SettingsPage.contextMenu) {
+                    SidebarPageLabel(page: .contextMenu)
                 }
             }
+            .navigationTitle("设置")
+            .navigationSplitViewColumnWidth(min: 150, ideal: 180)
+        } detail: {
+            NavigationStack {
+                Form {
+                    Section("右键显示选项") {
+                        ForEach(filteredActions) { action in
+                            Toggle(isOn: binding(for: action)) {
+                                Label(action.title, systemImage: action.symbolName)
+                            }
+                        }
+                    }
+                }
+                .formStyle(.grouped)
+                .settingsContentMargins()
+                .scrollContentBackground(.hidden)
+                .navigationTitle(selection?.title ?? SettingsPage.contextMenu.title)
+            }
         }
+        .environment(\.sidebarIconTileSize, sidebarIconTileSize)
+        .environment(\.sidebarIconSymbolSize, sidebarIconSymbolSize)
+        .environment(\.sidebarIconCornerRadius, sidebarIconCornerRadius)
+        .searchable(text: $searchText, placement: .toolbar, prompt: "搜索右键菜单")
+        .background {
+            WindowTransparencyConfigurator(enabled: true)
+                .frame(width: 0, height: 0)
+
+            WindowBackgroundBlur(materialAlpha: 1)
+                .ignoresSafeArea()
+        }
+        .onAppear {
+            persistEnabledActions()
+        }
+        .onChange(of: enabledActionIDs) { _, _ in
+            persistEnabledActions()
+        }
+    }
+
+    private var filteredActions: [MenuAction] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return MenuAction.all }
+        return MenuAction.all.filter { action in
+            action.title.localizedStandardContains(query)
+        }
+    }
+
+    private func binding(for action: MenuAction) -> Binding<Bool> {
+        Binding(
+            get: { enabledActionIDs.contains(action.id) },
+            set: { isEnabled in
+                if isEnabled {
+                    enabledActionIDs.insert(action.id)
+                } else {
+                    enabledActionIDs.remove(action.id)
+                }
+            }
+        )
+    }
+
+    private func persistEnabledActions() {
+        MenuActionConfiguration.setEnabledIDs(enabledActionIDs)
+        MenuActionConfiguration.writeEnabledIDs(enabledActionIDs)
+    }
+}
+
+private struct SidebarPageLabel: View {
+    let page: MagicRightView.SettingsPage
+
+    var body: some View {
+        HStack(spacing: 12) {
+            SidebarCategoryIcon(page: page)
+            Text(page.title)
+        }
+    }
+}
+
+private struct SidebarCategoryIcon: View {
+    let page: MagicRightView.SettingsPage
+    @Environment(\.sidebarIconTileSize) private var tileSize
+    @Environment(\.sidebarIconSymbolSize) private var symbolSize
+    @Environment(\.sidebarIconCornerRadius) private var cornerRadius
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(page.iconGradient)
+
+            Image(systemName: page.symbolName)
+                .font(.system(size: symbolSize, weight: .semibold))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.white)
+        }
+        .frame(width: tileSize, height: tileSize)
+    }
+}
+
+private struct SidebarIconTileSizeKey: EnvironmentKey {
+    static let defaultValue: Double = 32
+}
+
+private struct SidebarIconSymbolSizeKey: EnvironmentKey {
+    static let defaultValue: Double = 15
+}
+
+private struct SidebarIconCornerRadiusKey: EnvironmentKey {
+    static let defaultValue: Double = 8
+}
+
+private extension EnvironmentValues {
+    var sidebarIconTileSize: Double {
+        get { self[SidebarIconTileSizeKey.self] }
+        set { self[SidebarIconTileSizeKey.self] = newValue }
+    }
+
+    var sidebarIconSymbolSize: Double {
+        get { self[SidebarIconSymbolSizeKey.self] }
+        set { self[SidebarIconSymbolSizeKey.self] = newValue }
+    }
+
+    var sidebarIconCornerRadius: Double {
+        get { self[SidebarIconCornerRadiusKey.self] }
+        set { self[SidebarIconCornerRadiusKey.self] = newValue }
+    }
+}
+
+private extension View {
+    func settingsContentMargins() -> some View {
+        self
+            .contentMargins(.horizontal, 18, for: .scrollContent)
+            .contentMargins(.top, 0, for: .scrollContent)
     }
 }
