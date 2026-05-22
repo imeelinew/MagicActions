@@ -52,6 +52,9 @@ enum MenuActionConfiguration {
                 withIntermediateDirectories: true
             )
             let data = try JSONEncoder().encode(Array(ids).sorted())
+            if let existingData = try? Data(contentsOf: url), existingData == data {
+                return
+            }
             try data.write(to: url, options: .atomic)
         } catch {
             NSLog("[MagicRight] Failed to write menu configuration: \(error)")

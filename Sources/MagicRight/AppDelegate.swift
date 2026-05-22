@@ -20,7 +20,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         installMainMenu()
         configureStatusItem()
         installApplicationScripts()
-        setupNotificationPopover()
         startPopoverEventWatcher()
         mainWindowController.show()
     }
@@ -106,8 +105,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .appendingPathComponent("Library/Application Scripts/\(finderSyncBundleIdentifier)", isDirectory: true)
 
         do {
-            try syncDirectory(from: scriptsSource, to: scriptsDestination, executable: true)
-            try copyDirectoryContents(from: templatesSource, to: scriptsDestination, executable: false)
+            try syncManagedDirectoryContents(from: scriptsSource, to: scriptsDestination, executable: true)
+            try syncManagedDirectoryContents(from: templatesSource, to: scriptsDestination, executable: false)
             removeLegacyMoveState()
             MenuActionConfiguration.writeEnabledIDs(MenuActionConfiguration.enabledIDs())
             NSLog("[MagicRight] Installed scripts to \(scriptsDestination.path)")
@@ -131,13 +130,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var popoverEventURL: URL {
         scriptsDirectoryURL.appendingPathComponent("popover-event.txt")
-    }
-
-    private func setupNotificationPopover() {
-        let popover = NSPopover()
-        popover.behavior = .applicationDefined
-        popover.animates = true
-        notificationPopover = popover
     }
 
     private func startPopoverEventWatcher() {
@@ -245,30 +237,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + notificationSeconds, execute: work)
     }
 
-    private func syncDirectory(from source: URL, to destination: URL, executable: Bool) throws {
-        let fileManager = FileManager.default
-        if fileManager.fileExists(atPath: destination.path) {
-            try fileManager.removeItem(at: destination)
-        }
-        try fileManager.createDirectory(at: destination, withIntermediateDirectories: true)
-        try copyDirectoryContents(from: source, to: destination, executable: executable)
-    }
-
-    private func copyDirectoryContents(from source: URL, to destination: URL, executable: Bool) throws {
+    private func syncManagedDirectoryContents(from source: URL, to destination: URL, executable: Bool) throws {
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: source.path) else { return }
+        try fileManager.createDirectory(at: destination, withIntermediateDirectories: true)
+
         let itemURLs = try fileManager.contentsOfDirectory(
             at: source,
             includingPropertiesForKeys: nil,
             options: [.skipsHiddenFiles]
         )
+        let sourceNames = Set(itemURLs.map(\.lastPathComponent))
+
+        if executable {
+            let destinationURLs = try fileManager.contentsOfDirectory(
+                at: destination,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )
+            for destinationURL in destinationURLs
+                where destinationURL.pathExtension == "sh" && !sourceNames.contains(destinationURL.lastPathComponent) {
+                try fileManager.removeItem(at: destinationURL)
+            }
+        }
 
         for itemURL in itemURLs {
             let targetURL = destination.appendingPathComponent(itemURL.lastPathComponent)
-            if fileManager.fileExists(atPath: targetURL.path) {
+            if fileManager.fileExists(atPath: targetURL.path),
+               !fileManager.contentsEqual(atPath: itemURL.path, andPath: targetURL.path) {
                 try fileManager.removeItem(at: targetURL)
+                try fileManager.copyItem(at: itemURL, to: targetURL)
+            } else if !fileManager.fileExists(atPath: targetURL.path) {
+                try fileManager.copyItem(at: itemURL, to: targetURL)
             }
-            try fileManager.copyItem(at: itemURL, to: targetURL)
             if executable {
                 try fileManager.setAttributes(
                     [.posixPermissions: NSNumber(value: Int16(0o755))],

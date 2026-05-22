@@ -38,7 +38,10 @@ struct MagicRightView: View {
                     Section("右键显示选项") {
                         ForEach(filteredActions) { action in
                             Toggle(isOn: binding(for: action)) {
-                                Label(action.title, systemImage: action.symbolName)
+                                HStack(spacing: 10) {
+                                    MenuActionIcon(actionID: action.id, size: 24)
+                                    Text(action.title)
+                                }
                             }
                         }
                     }
@@ -92,6 +95,133 @@ struct MagicRightView: View {
     private func persistEnabledActions() {
         MenuActionConfiguration.setEnabledIDs(enabledActionIDs)
         MenuActionConfiguration.writeEnabledIDs(enabledActionIDs)
+    }
+}
+
+private struct MenuActionIcon: View {
+    let actionID: String
+    let size: CGFloat
+
+    private var iconAssetName: String? {
+        switch actionID {
+        case "new-markdown":
+            return "logo-markdown"
+        case "open-ghostty":
+            return "logo-ghostty"
+        case "open-vscode":
+            return "logo-vscode"
+        case "git-commit-push":
+            return "logo-github"
+        default:
+            return nil
+        }
+    }
+
+    private var symbolName: String {
+        switch actionID {
+        case "subtitles":
+            return "captions.bubble"
+        case "new-text":
+            return "doc.text"
+        case "new-markdown":
+            return "chevron.left.forwardslash.chevron.right"
+        case "new-word":
+            return "doc.richtext"
+        case "open-ghostty":
+            return "terminal"
+        case "open-vscode":
+            return "curlybraces"
+        case "git-commit-push":
+            return "arrow.up.doc"
+        case "copy-path":
+            return "point.topleft.down.curvedto.point.bottomright.up"
+        default:
+            return "circle"
+        }
+    }
+
+    private var gradient: LinearGradient {
+        LinearGradient(
+            colors: gradientColors,
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    private var gradientColors: [Color] {
+        switch actionID {
+        case "new-text":
+            return [
+                Color(red: 0.48, green: 0.58, blue: 0.70),
+                Color(red: 0.25, green: 0.34, blue: 0.48)
+            ]
+        case "new-markdown":
+            return [
+                Color(red: 0.20, green: 0.22, blue: 0.26),
+                Color(red: 0.05, green: 0.06, blue: 0.08)
+            ]
+        case "new-word":
+            return [
+                Color(red: 0.22, green: 0.46, blue: 0.96),
+                Color(red: 0.07, green: 0.22, blue: 0.68)
+            ]
+        case "open-ghostty":
+            return [
+                Color(red: 0.28, green: 0.26, blue: 0.34),
+                Color(red: 0.10, green: 0.10, blue: 0.14)
+            ]
+        case "open-vscode":
+            return [
+                Color(red: 0.15, green: 0.55, blue: 0.92),
+                Color(red: 0.00, green: 0.32, blue: 0.67)
+            ]
+        case "git-commit-push":
+            return [
+                Color(red: 0.98, green: 0.42, blue: 0.22),
+                Color(red: 0.76, green: 0.18, blue: 0.12)
+            ]
+        case "copy-path":
+            return [
+                Color(red: 0.98, green: 0.50, blue: 0.36),
+                Color(red: 0.83, green: 0.22, blue: 0.18)
+            ]
+        default:
+            return [
+                Color(red: 0.18, green: 0.78, blue: 0.35),
+                Color(red: 0.12, green: 0.64, blue: 0.28)
+            ]
+        }
+    }
+
+    private var assetPadding: CGFloat {
+        switch actionID {
+        case "new-markdown", "git-commit-push":
+            return 5
+        default:
+            return 6
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(gradient)
+
+            if let iconAssetName {
+                Image(iconAssetName)
+                    .resizable()
+                    .renderingMode(.template)
+                    .scaledToFit()
+                    .foregroundStyle(.white)
+                    .padding(assetPadding)
+            } else {
+                Image(systemName: symbolName)
+                    .font(.system(size: size * 0.48, weight: .semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.white)
+            }
+        }
+        .frame(width: size, height: size)
     }
 }
 

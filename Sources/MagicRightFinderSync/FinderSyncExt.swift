@@ -8,22 +8,24 @@ final class FinderSyncExt: FIFinderSync {
         let title: String
         let filename: String
         let symbol: String
+        let assetName: String?
         let allowsEmpty: Bool
     }
 
     private let services: [Service] = [
-        Service(id: "subtitles", title: "生成字幕", filename: "gen_subtitles.sh", symbol: "", allowsEmpty: false),
-        Service(id: "new-text", title: "新建文本文件", filename: "new_txt.sh", symbol: "", allowsEmpty: false),
-        Service(id: "new-markdown", title: "新建 Markdown 文件", filename: "new_md.sh", symbol: "", allowsEmpty: false),
-        Service(id: "new-word", title: "新建 Word 文档", filename: "new_docx.sh", symbol: "", allowsEmpty: false),
-        Service(id: "open-ghostty", title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbol: "", allowsEmpty: false),
-        Service(id: "open-vscode", title: "用 VS Code 打开", filename: "open_vscode.sh", symbol: "", allowsEmpty: false),
-        Service(id: "git-commit-push", title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbol: "", allowsEmpty: false),
-        Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "", allowsEmpty: false)
+        Service(id: "subtitles", title: "生成字幕", filename: "gen_subtitles.sh", symbol: "captions.bubble", assetName: nil, allowsEmpty: false),
+        Service(id: "new-text", title: "新建文本文件", filename: "new_txt.sh", symbol: "doc.text", assetName: nil, allowsEmpty: false),
+        Service(id: "new-markdown", title: "新建 Markdown 文件", filename: "new_md.sh", symbol: "chevron.left.forwardslash.chevron.right", assetName: "logo-markdown", allowsEmpty: false),
+        Service(id: "new-word", title: "新建 Word 文档", filename: "new_docx.sh", symbol: "doc.richtext", assetName: nil, allowsEmpty: false),
+        Service(id: "open-ghostty", title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbol: "terminal", assetName: "logo-ghostty", allowsEmpty: false),
+        Service(id: "open-vscode", title: "用 VS Code 打开", filename: "open_vscode.sh", symbol: "curlybraces", assetName: "logo-vscode", allowsEmpty: false),
+        Service(id: "git-commit-push", title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbol: "arrow.up.doc", assetName: "logo-github", allowsEmpty: false),
+        Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "point.topleft.down.curvedto.point.bottomright.up", assetName: nil, allowsEmpty: false)
     ]
 
     private static let logQueue = DispatchQueue(label: "local.elidev.MagicRight.findersync.log")
     private static let logMaxBytes: UInt64 = 1 * 1024 * 1024
+    private var iconCache: [String: NSImage] = [:]
 
     override init() {
         super.init()
@@ -38,23 +40,23 @@ final class FinderSyncExt: FIFinderSync {
         let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
         let tint: NSColor = isDark ? .white : .black
 
-        let visibleServices = services.filter { enabledServiceIDs.contains($0.id) }
+        let enabledServiceIDs = enabledServiceIDs
 
-        for service in visibleServices {
+        for (index, service) in services.enumerated() where enabledServiceIDs.contains(service.id) {
             let item = NSMenuItem(
                 title: service.title,
                 action: #selector(runScript(_:)),
                 keyEquivalent: ""
             )
-            item.tag = services.firstIndex { $0.id == service.id } ?? -1
-            if !service.symbol.isEmpty, let image = tintedSymbol(service.symbol, color: tint) {
+            item.tag = index
+            if let image = cachedMenuIcon(for: service, color: tint, isDark: isDark) {
                 item.image = image
             }
             submenu.addItem(item)
         }
 
         let parent = NSMenuItem(title: "MagicRight", action: nil, keyEquivalent: "")
-        if let image = tintedSymbol("sparkles", color: tint) {
+        if let image = cachedSymbol("sparkles", color: tint, isDark: isDark) {
             parent.image = image
         }
         parent.submenu = submenu
@@ -76,6 +78,51 @@ final class FinderSyncExt: FIFinderSync {
             return Set(ids)
         } catch {
             return Set(services.map(\.id))
+        }
+    }
+
+    private func cachedMenuIcon(for service: Service, color: NSColor, isDark: Bool) -> NSImage? {
+        let cacheKey = "\(isDark ? "dark" : "light"):\(service.assetName ?? service.symbol)"
+        if let cached = iconCache[cacheKey] {
+            return cached
+        }
+        guard let image = menuIcon(for: service, color: color) else {
+            return nil
+        }
+        iconCache[cacheKey] = image
+        return image
+    }
+
+    private func cachedSymbol(_ name: String, color: NSColor, isDark: Bool) -> NSImage? {
+        let cacheKey = "\(isDark ? "dark" : "light"):\(name)"
+        if let cached = iconCache[cacheKey] {
+            return cached
+        }
+        guard let image = tintedSymbol(name, color: color) else {
+            return nil
+        }
+        iconCache[cacheKey] = image
+        return image
+    }
+
+    private func menuIcon(for service: Service, color: NSColor) -> NSImage? {
+        if let assetName = service.assetName,
+           let image = tintedAsset(assetName, color: color) {
+            return image
+        }
+        return tintedSymbol(service.symbol, color: color)
+    }
+
+    private func tintedAsset(_ name: String, color: NSColor) -> NSImage? {
+        guard let source = NSImage(named: NSImage.Name(name)) else {
+            return nil
+        }
+        let size = NSSize(width: 16, height: 16)
+        return NSImage(size: size, flipped: false) { rect in
+            source.draw(in: rect)
+            color.set()
+            rect.fill(using: .sourceAtop)
+            return true
         }
     }
 
