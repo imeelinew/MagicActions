@@ -2,8 +2,6 @@
 
 MagicRight is a native macOS menu bar host app plus Finder Sync extension for custom Finder context-menu actions.
 
-This project is the Xcode-based successor to `super-rightclick`. The old Python build generator is not used here; Finder Sync source, scripts, templates, entitlements, and Xcode project configuration are tracked directly.
-
 ## Targets
 
 - `MagicRight`: menu bar host app. It installs bundled scripts/templates into the Finder Sync Application Scripts directory and shows a minimal status-bar menu.

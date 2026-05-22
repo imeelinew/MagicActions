@@ -108,11 +108,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try syncDirectory(from: scriptsSource, to: scriptsDestination, executable: true)
             try copyDirectoryContents(from: templatesSource, to: scriptsDestination, executable: false)
+            removeLegacyMoveState()
             MenuActionConfiguration.writeEnabledIDs(MenuActionConfiguration.enabledIDs())
             NSLog("[MagicRight] Installed scripts to \(scriptsDestination.path)")
         } catch {
             NSLog("[MagicRight] Failed to install scripts: \(error)")
         }
+    }
+
+    private func removeLegacyMoveState() {
+        let stateDirectory = FileManager.default
+            .homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/MagicRight", isDirectory: true)
+        try? FileManager.default.removeItem(at: stateDirectory)
     }
 
     private var scriptsDirectoryURL: URL {
@@ -127,7 +135,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setupNotificationPopover() {
         let popover = NSPopover()
-        popover.behavior = .transient
+        popover.behavior = .applicationDefined
         popover.animates = true
         notificationPopover = popover
     }
@@ -185,12 +193,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard lines.count >= 3 else { return }
 
         let kind: MenuBarNotificationView.Kind = lines[0] == "error" ? .error : .success
-        showMenuBarPopover(title: lines[1], subtitle: lines[2], kind: kind)
+        let actionID: String
+        let title: String
+        let subtitle: String
+        if lines.count >= 4 {
+            actionID = lines[1]
+            title = lines[2]
+            subtitle = lines[3]
+        } else {
+            actionID = "generic"
+            title = lines[1]
+            subtitle = lines[2]
+        }
+        showMenuBarPopover(title: title, subtitle: subtitle, actionID: actionID, kind: kind)
     }
 
     private func showMenuBarPopover(
         title: String,
         subtitle: String,
+        actionID: String,
         kind: MenuBarNotificationView.Kind
     ) {
         guard let button = statusItem.button else { return }
@@ -199,14 +220,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         notificationPopover?.close()
 
         let hosting = NSHostingController(
-            rootView: MenuBarNotificationView(title: title, subtitle: subtitle, kind: kind)
+            rootView: MenuBarNotificationView(title: title, subtitle: subtitle, actionID: actionID, kind: kind)
         )
         hosting.view.frame = NSRect(x: 0, y: 0, width: 280, height: 200)
         hosting.view.layoutSubtreeIfNeeded()
         let fitted = hosting.view.fittingSize
 
         let popover = NSPopover()
-        popover.behavior = .transient
+        popover.behavior = .applicationDefined
         popover.animates = true
         popover.contentViewController = hosting
         popover.contentSize = NSSize(width: 280, height: fitted.height)

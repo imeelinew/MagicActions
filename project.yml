@@ -15,6 +15,7 @@ targets:
     sources:
       - path: Sources/MagicRight
       - path: icon/MagicRight.icon
+      - path: Resources/Assets.xcassets
       - path: Resources/Scripts
         type: folder
       - path: Resources/Templates

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		042D6BDF00481CEC1348E7DC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BDCA36A0FB14184EDE7A7A /* main.swift */; };
+		085C66135BDA2D7538377F23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB48C468D3EA3AE35B8ED719 /* Assets.xcassets */; };
 		2E7B8EB647AC8BADD72AB5F3 /* MagicRight.icon in Resources */ = {isa = PBXBuildFile; fileRef = C488B5D5D39641C35DB2D83D /* MagicRight.icon */; };
 		3CF60418FBB425DE1265DB11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D284C6F007745B0E9645D7 /* AppDelegate.swift */; };
 		5C18A71E692CAFB978F50239 /* MagicRightWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70674DEF14A4058329AC6AEF /* MagicRightWindowController.swift */; };
@@ -58,6 +59,7 @@
 		B4DF337A063CE525F5578714 /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Templates; path = Resources/Templates; sourceTree = SOURCE_ROOT; };
 		C488B5D5D39641C35DB2D83D /* MagicRight.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = MagicRight.icon; sourceTree = "<group>"; };
 		C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBackgroundBlur.swift; sourceTree = "<group>"; };
+		DB48C468D3EA3AE35B8ED719 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E6EE04436D5CF84663796FAF /* FinderSyncExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSyncExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +105,14 @@
 			path = Sources/MagicRight;
 			sourceTree = "<group>";
 		};
+		9375F6096300886AC91A78BE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DB48C468D3EA3AE35B8ED719 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		EA4584086D803DB4DC7C20DE = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +121,7 @@
 				6124F3DD817F35EC5B90A1F4 /* icon */,
 				6EBD6A287E6769CF5BB9A9E2 /* MagicRight */,
 				3EE35A68A6435B2D0D1DA4B7 /* MagicRightFinderSync */,
+				9375F6096300886AC91A78BE /* Resources */,
 				509A2C2E636206CE96B9BD23 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -199,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				085C66135BDA2D7538377F23 /* Assets.xcassets in Resources */,
 				2E7B8EB647AC8BADD72AB5F3 /* MagicRight.icon in Resources */,
 				72EB0E0B46F1ADE7FB3FFA0B /* Scripts in Resources */,
 				BBB4D5BBAE64D26A82722008 /* Templates in Resources */,

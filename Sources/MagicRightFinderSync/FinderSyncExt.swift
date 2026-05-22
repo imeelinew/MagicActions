@@ -19,9 +19,7 @@ final class FinderSyncExt: FIFinderSync {
         Service(id: "open-ghostty", title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbol: "", allowsEmpty: false),
         Service(id: "open-vscode", title: "用 VS Code 打开", filename: "open_vscode.sh", symbol: "", allowsEmpty: false),
         Service(id: "git-commit-push", title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbol: "", allowsEmpty: false),
-        Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "", allowsEmpty: false),
-        Service(id: "cut", title: "剪切", filename: "cut_items.sh", symbol: "", allowsEmpty: true),
-        Service(id: "paste", title: "粘贴", filename: "paste_cut_items.sh", symbol: "", allowsEmpty: false)
+        Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "", allowsEmpty: false)
     ]
 
     private static let logQueue = DispatchQueue(label: "local.elidev.MagicRight.findersync.log")

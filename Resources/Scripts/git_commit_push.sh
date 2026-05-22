@@ -3,6 +3,7 @@ LOG="$HOME/Library/Logs/magicright.log"
 [ "$(/usr/bin/stat -f%z "$LOG" 2>/dev/null || echo 0)" -gt 1048576 ] && /bin/mv "$LOG" "$LOG.1"
 exec >>"$LOG" 2>&1
 echo "=== $(date) [git-commit-push] argc=$# ==="
+. "$(dirname "$0")/magicright_popover.sh"
 emulate -L zsh
 setopt local_options no_nomatch
 
@@ -13,6 +14,7 @@ export SSH_ASKPASS=/usr/bin/false
 
 notify() {
     echo "NOTICE: 提交并推送当前仓库: $1"
+    emit_popover "error" "git-commit-push" "操作失败" "$1"
 }
 
 if [ ! -x /usr/bin/git ]; then
@@ -124,5 +126,6 @@ if ! /usr/bin/git -C "$repo" push; then
     exit 1
 fi
 
-notify "已提交并推送 | $msg"
+echo "NOTICE: 提交并推送当前仓库: 已提交并推送 | $msg"
+emit_popover "success" "git-commit-push" "提交并推送成功" "$msg"
 echo "OK: committed and pushed $repo @ $msg"

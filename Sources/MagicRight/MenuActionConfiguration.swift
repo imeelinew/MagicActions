@@ -15,9 +15,7 @@ struct MenuAction: Identifiable, Hashable {
         MenuAction(id: "open-ghostty", title: "用 Ghostty 打开", filename: "open_ghostty.sh", symbolName: "terminal", allowsEmpty: false),
         MenuAction(id: "open-vscode", title: "用 VS Code 打开", filename: "open_vscode.sh", symbolName: "curlybraces", allowsEmpty: false),
         MenuAction(id: "git-commit-push", title: "提交并推送当前仓库", filename: "git_commit_push.sh", symbolName: "arrow.up.doc", allowsEmpty: false),
-        MenuAction(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbolName: "doc.on.doc", allowsEmpty: false),
-        MenuAction(id: "cut", title: "剪切", filename: "cut_items.sh", symbolName: "scissors", allowsEmpty: true),
-        MenuAction(id: "paste", title: "粘贴", filename: "paste_cut_items.sh", symbolName: "doc.on.clipboard", allowsEmpty: false)
+        MenuAction(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbolName: "point.topleft.down.curvedto.point.bottomright.up", allowsEmpty: false)
     ]
 }
 
