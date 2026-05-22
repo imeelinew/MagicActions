@@ -21,7 +21,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configureStatusItem()
         installApplicationScripts()
         startPopoverEventWatcher()
-        mainWindowController.show()
     }
 
     private func installMainMenu() {
@@ -70,22 +69,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func makeMenu() -> NSMenu {
         let menu = NSMenu(title: "MagicRight")
 
-        let titleItem = NSMenuItem(title: "MagicRight", action: nil, keyEquivalent: "")
-        titleItem.isEnabled = false
-        menu.addItem(titleItem)
-
-        let readyItem = NSMenuItem(title: "Finder 扩展已就绪", action: nil, keyEquivalent: "")
-        readyItem.isEnabled = false
-        menu.addItem(readyItem)
-
-        menu.addItem(.separator())
         menu.addItem(
             withTitle: "打开 MagicRight",
             action: #selector(showMainWindow),
             keyEquivalent: "o"
         )
         menu.addItem(
-            withTitle: "退出 MagicRight",
+            withTitle: "退出",
             action: #selector(quit),
             keyEquivalent: "q"
         )
