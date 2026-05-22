@@ -29,7 +29,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicRight
         PRODUCT_NAME: MagicRight
         MARKETING_VERSION: 0.2.2
-        CURRENT_PROJECT_VERSION: 1
+        CURRENT_PROJECT_VERSION: 0.2.2
         INFOPLIST_FILE: Supporting/MagicRight-Info.plist
         INFOPLIST_KEY_LSUIElement: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: MagicRight
@@ -49,7 +49,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicRight.FinderSync
         PRODUCT_NAME: MagicRightFinderSync
         MARKETING_VERSION: 0.2.2
-        CURRENT_PROJECT_VERSION: 1
+        CURRENT_PROJECT_VERSION: 0.2.2
         INFOPLIST_FILE: Supporting/MagicRightFinderSync-Info.plist
         CODE_SIGN_ENTITLEMENTS: Supporting/MagicRightFinderSync.entitlements
         CODE_SIGN_STYLE: Automatic

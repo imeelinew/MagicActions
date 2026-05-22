@@ -18,6 +18,7 @@ xcodebuild \
   -scheme "$APP_NAME" \
   -configuration Release \
   -derivedDataPath "$DERIVED_DATA_DIR" \
+  CURRENT_PROJECT_VERSION=$(date +%Y%m%d%H%M) \
   build
 
 rm -rf "$APP_DIR"
