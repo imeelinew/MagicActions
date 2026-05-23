@@ -78,6 +78,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func makeMenu() -> NSMenu {
         let menu = NSMenu(title: "MagicActions")
 
+        addWindowOperationItem(
+            to: menu,
+            title: "窗口左半屏",
+            symbolName: "rectangle.lefthalf.filled",
+            action: #selector(moveFocusedWindowLeftHalf),
+            keyEquivalent: String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!))
+        )
+        addWindowOperationItem(
+            to: menu,
+            title: "窗口右半屏",
+            symbolName: "rectangle.righthalf.filled",
+            action: #selector(moveFocusedWindowRightHalf),
+            keyEquivalent: String(Character(UnicodeScalar(NSRightArrowFunctionKey)!))
+        )
+        addWindowOperationItem(
+            to: menu,
+            title: "窗口最大化",
+            symbolName: "arrow.up.left.and.arrow.down.right",
+            action: #selector(maximizeFocusedWindow),
+            keyEquivalent: String(Character(UnicodeScalar(NSUpArrowFunctionKey)!))
+        )
+        addWindowOperationItem(
+            to: menu,
+            title: "窗口居中",
+            symbolName: "rectangle.center.inset.filled",
+            action: #selector(centerFocusedWindow),
+            keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!))
+        )
+        menu.addItem(.separator())
         menu.addItem(
             withTitle: "打开 MagicActions",
             action: #selector(showMainWindow),
@@ -89,6 +118,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: "q"
         )
         return menu
+    }
+
+    private func addWindowOperationItem(
+        to menu: NSMenu,
+        title: String,
+        symbolName: String,
+        action: Selector,
+        keyEquivalent: String
+    ) {
+        let item = NSMenuItem(title: title, action: action, keyEquivalent: keyEquivalent)
+        item.target = self
+        item.keyEquivalentModifierMask = [.command]
+        item.image = NSImage(systemSymbolName: symbolName, accessibilityDescription: title)
+        item.image?.isTemplate = true
+        menu.addItem(item)
     }
 
     private func installApplicationScripts() {
@@ -317,6 +361,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func showMainWindow() {
         mainWindowController.show()
+    }
+
+    @objc private func moveFocusedWindowLeftHalf() {
+        windowOperationManager.moveFocusedWindowLeftHalf()
+    }
+
+    @objc private func moveFocusedWindowRightHalf() {
+        windowOperationManager.moveFocusedWindowRightHalf()
+    }
+
+    @objc private func maximizeFocusedWindow() {
+        windowOperationManager.maximizeFocusedWindow()
+    }
+
+    @objc private func centerFocusedWindow() {
+        windowOperationManager.centerFocusedWindow()
     }
 
     @objc private func quit() {

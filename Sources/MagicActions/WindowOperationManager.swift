@@ -16,6 +16,13 @@ final class WindowOperationManager {
         let size: CGSize
     }
 
+    private enum WindowLayout {
+        case leftHalf
+        case rightHalf
+        case maximized
+        case centeredDefault
+    }
+
     private var eventHandler: EventHandlerRef?
     private var hotKeyRefs: [EventHotKeyRef?] = []
 
@@ -89,28 +96,41 @@ final class WindowOperationManager {
     }
 
     private func handleHotKey(id: UInt32) {
-        guard WindowOperationConfiguration.isEnabled() else { return }
-        guard AXIsProcessTrusted() else { return }
         guard let hotKey = HotKey(rawValue: id) else { return }
-        guard let target = focusedWindow() else { return }
 
         switch hotKey {
         case .left:
-            move(target, to: .leftHalf)
+            moveFocusedWindowLeftHalf()
         case .right:
-            move(target, to: .rightHalf)
+            moveFocusedWindowRightHalf()
         case .up:
-            move(target, to: .maximized)
+            maximizeFocusedWindow()
         case .down:
-            move(target, to: .centeredDefault)
+            centerFocusedWindow()
         }
     }
 
-    private enum WindowLayout {
-        case leftHalf
-        case rightHalf
-        case maximized
-        case centeredDefault
+    func moveFocusedWindowLeftHalf() {
+        performWindowOperation(.leftHalf)
+    }
+
+    func moveFocusedWindowRightHalf() {
+        performWindowOperation(.rightHalf)
+    }
+
+    func maximizeFocusedWindow() {
+        performWindowOperation(.maximized)
+    }
+
+    func centerFocusedWindow() {
+        performWindowOperation(.centeredDefault)
+    }
+
+    private func performWindowOperation(_ layout: WindowLayout) {
+        guard WindowOperationConfiguration.isEnabled() else { return }
+        guard AXIsProcessTrusted() else { return }
+        guard let target = focusedWindow() else { return }
+        move(target, to: layout)
     }
 
     private func move(_ target: WindowTarget, to layout: WindowLayout) {
