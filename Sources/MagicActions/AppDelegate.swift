@@ -106,6 +106,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             action: #selector(centerFocusedWindow),
             keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!))
         )
+        addWindowOperationItem(
+            to: menu,
+            title: "最小化其它窗口",
+            symbolName: "minus.rectangle",
+            action: #selector(minimizeOtherApplicationWindows),
+            keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)),
+            modifierMask: [.command, .option]
+        )
         menu.addItem(.separator())
         menu.addItem(
             withTitle: "打开 MagicActions",
@@ -125,11 +133,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         title: String,
         symbolName: String,
         action: Selector,
-        keyEquivalent: String
+        keyEquivalent: String = "",
+        modifierMask: NSEvent.ModifierFlags = [.command]
     ) {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: keyEquivalent)
         item.target = self
-        item.keyEquivalentModifierMask = [.command]
+        item.keyEquivalentModifierMask = keyEquivalent.isEmpty ? [] : modifierMask
         item.image = NSImage(systemSymbolName: symbolName, accessibilityDescription: title)
         item.image?.isTemplate = true
         menu.addItem(item)
@@ -377,6 +386,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func centerFocusedWindow() {
         windowOperationManager.centerFocusedWindow()
+    }
+
+    @objc private func minimizeOtherApplicationWindows() {
+        windowOperationManager.minimizeOtherApplicationWindows()
     }
 
     @objc private func quit() {

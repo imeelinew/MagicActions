@@ -9,6 +9,7 @@ final class WindowOperationManager {
         case right = 2
         case up = 3
         case down = 4
+        case minimizeOthers = 5
     }
 
     private struct WindowFrame {
@@ -65,6 +66,7 @@ final class WindowOperationManager {
         register(keyCode: UInt32(kVK_RightArrow), id: .right)
         register(keyCode: UInt32(kVK_UpArrow), id: .up)
         register(keyCode: UInt32(kVK_DownArrow), id: .down)
+        register(keyCode: UInt32(kVK_DownArrow), modifiers: UInt32(cmdKey | optionKey), id: .minimizeOthers)
     }
 
     func stop() {
@@ -81,12 +83,12 @@ final class WindowOperationManager {
         eventHandler = nil
     }
 
-    private func register(keyCode: UInt32, id: HotKey) {
+    private func register(keyCode: UInt32, modifiers: UInt32 = UInt32(cmdKey), id: HotKey) {
         var hotKeyRef: EventHotKeyRef?
         let hotKeyID = EventHotKeyID(signature: fourCharCode("MgRt"), id: id.rawValue)
         RegisterEventHotKey(
             keyCode,
-            UInt32(cmdKey),
+            modifiers,
             hotKeyID,
             GetApplicationEventTarget(),
             0,
@@ -107,6 +109,8 @@ final class WindowOperationManager {
             maximizeFocusedWindow()
         case .down:
             centerFocusedWindow()
+        case .minimizeOthers:
+            minimizeOtherApplicationWindows()
         }
     }
 
@@ -124,6 +128,18 @@ final class WindowOperationManager {
 
     func centerFocusedWindow() {
         performWindowOperation(.centeredDefault)
+    }
+
+    func minimizeOtherApplicationWindows() {
+        guard WindowOperationConfiguration.isEnabled() else { return }
+        guard AXIsProcessTrusted() else { return }
+        guard let frontmostApplication = NSWorkspace.shared.frontmostApplication else { return }
+
+        for application in NSWorkspace.shared.runningApplications {
+            guard application.processIdentifier != frontmostApplication.processIdentifier else { continue }
+            guard application.activationPolicy == .regular else { continue }
+            minimizeWindows(for: application)
+        }
     }
 
     private func performWindowOperation(_ layout: WindowLayout) {
@@ -186,6 +202,15 @@ final class WindowOperationManager {
 
         guard let window else { return nil }
         return WindowTarget(window: window, identifier: "\(app.processIdentifier)-\(CFHash(window))")
+    }
+
+    private func minimizeWindows(for application: NSRunningApplication) {
+        let appElement = AXUIElementCreateApplication(application.processIdentifier)
+        guard let windows = arrayValue(for: kAXWindowsAttribute, element: appElement) else { return }
+
+        for window in windows {
+            AXUIElementSetAttributeValue(window, kAXMinimizedAttribute as CFString, kCFBooleanTrue)
+        }
     }
 
     private func readFrame(_ window: AXUIElement) -> WindowFrame? {
