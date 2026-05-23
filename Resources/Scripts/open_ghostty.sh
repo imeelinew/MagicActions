@@ -1,9 +1,9 @@
 #!/bin/zsh
-LOG="$HOME/Library/Logs/magicright.log"
+LOG="$HOME/Library/Logs/magicactions.log"
 [ "$(/usr/bin/stat -f%z "$LOG" 2>/dev/null || echo 0)" -gt 1048576 ] && /bin/mv "$LOG" "$LOG.1"
 exec >>"$LOG" 2>&1
 echo "=== $(date) [ghostty] argc=$# ==="
-. "$(dirname "$0")/magicright_popover.sh"
+. "$(dirname "$0")/magicactions_popover.sh"
 for dir in "$@"; do
     if /usr/bin/open -a Ghostty "$dir"; then
         echo "OK: $dir"

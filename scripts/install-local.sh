@@ -2,18 +2,18 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-APP_NAME="MagicRight"
+APP_NAME="MagicActions"
 APP_SOURCE="$ROOT_DIR/.build/dist/$APP_NAME.app"
 APP_DEST="$HOME/Applications/$APP_NAME.app"
-EXTENSION_ID="local.elidev.MagicRight.FinderSync"
+EXTENSION_ID="local.elidev.MagicActions.FinderSync"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
 
 unregister_app() {
   local app_path="$1"
   [ -d "$app_path" ] || return 0
   "$LSREGISTER" -u "$app_path" >/dev/null 2>&1 || true
-  if [ -d "$app_path/Contents/PlugIns/MagicRightFinderSync.appex" ]; then
-    pluginkit -r "$app_path/Contents/PlugIns/MagicRightFinderSync.appex" >/dev/null 2>&1 || true
+  if [ -d "$app_path/Contents/PlugIns/MagicActionsFinderSync.appex" ]; then
+    pluginkit -r "$app_path/Contents/PlugIns/MagicActionsFinderSync.appex" >/dev/null 2>&1 || true
   fi
 }
 
@@ -24,7 +24,7 @@ unregister_build_products() {
     unregister_app "$app_path"
   done < <(
     find "$ROOT_DIR/.build" "$HOME/Library/Developer/Xcode/DerivedData" \
-      -path "*/MagicRight.app" -type d -prune 2>/dev/null || true
+      -path "*/MagicActions.app" -type d -prune 2>/dev/null || true
   )
 }
 
@@ -38,7 +38,7 @@ ditto "$APP_SOURCE" "$APP_DEST"
 
 "$LSREGISTER" -f "$APP_DEST" || true
 
-pluginkit -a "$APP_DEST/Contents/PlugIns/MagicRightFinderSync.appex" || true
+pluginkit -a "$APP_DEST/Contents/PlugIns/MagicActionsFinderSync.appex" || true
 pluginkit -e use -i "$EXTENSION_ID" || true
 unregister_build_products
 

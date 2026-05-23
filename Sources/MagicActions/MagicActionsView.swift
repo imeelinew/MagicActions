@@ -2,7 +2,7 @@ import AppKit
 import PermissionFlow
 import SwiftUI
 
-struct MagicRightView: View {
+struct MagicActionsView: View {
     @State private var selection: SettingsPage? = .contextMenu
     @State private var enabledActionIDs = MenuActionConfiguration.enabledIDs()
     @State private var windowOperationsEnabled = WindowOperationConfiguration.isEnabled()
@@ -332,7 +332,7 @@ private struct MenuActionIcon: View {
 }
 
 private struct SidebarPageLabel: View {
-    let page: MagicRightView.SettingsPage
+    let page: MagicActionsView.SettingsPage
 
     var body: some View {
         HStack(spacing: 12) {
@@ -343,7 +343,7 @@ private struct SidebarPageLabel: View {
 }
 
 private struct SidebarCategoryIcon: View {
-    let page: MagicRightView.SettingsPage
+    let page: MagicActionsView.SettingsPage
     @Environment(\.sidebarIconTileSize) private var tileSize
     @Environment(\.sidebarIconSymbolSize) private var symbolSize
     @Environment(\.sidebarIconCornerRadius) private var cornerRadius

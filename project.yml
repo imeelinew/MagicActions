@@ -1,4 +1,4 @@
-name: MagicRight
+name: MagicActions
 options:
   bundleIdPrefix: local.elidev
   deploymentTarget:
@@ -13,49 +13,49 @@ packages:
     path: Vendor/PermissionFlow
 
 targets:
-  MagicRight:
+  MagicActions:
     type: application
     platform: macOS
     sources:
-      - path: Sources/MagicRight
-      - path: icon/MagicRight.icon
+      - path: Sources/MagicActions
+      - path: icon/MagicActions.icon
       - path: Resources/Assets.xcassets
       - path: Resources/Scripts
         type: folder
       - path: Resources/Templates
         type: folder
     dependencies:
-      - target: MagicRightFinderSync
+      - target: MagicActionsFinderSync
         embed: true
         codeSign: true
       - package: PermissionFlow
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicRight
-        PRODUCT_NAME: MagicRight
+        PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicActions
+        PRODUCT_NAME: MagicActions
         MARKETING_VERSION: 0.2.2
         CURRENT_PROJECT_VERSION: 0.2.2
-        INFOPLIST_FILE: Supporting/MagicRight-Info.plist
+        INFOPLIST_FILE: Supporting/MagicActions-Info.plist
         INFOPLIST_KEY_LSUIElement: YES
-        ASSETCATALOG_COMPILER_APPICON_NAME: MagicRight
+        ASSETCATALOG_COMPILER_APPICON_NAME: MagicActions
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""
     scheme:
       testTargets: []
 
-  MagicRightFinderSync:
+  MagicActionsFinderSync:
     type: app-extension
     platform: macOS
     sources:
-      - path: Sources/MagicRightFinderSync
+      - path: Sources/MagicActionsFinderSync
       - path: Resources/Assets.xcassets
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicRight.FinderSync
-        PRODUCT_NAME: MagicRightFinderSync
+        PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicActions.FinderSync
+        PRODUCT_NAME: MagicActionsFinderSync
         MARKETING_VERSION: 0.2.2
         CURRENT_PROJECT_VERSION: 0.2.2
-        INFOPLIST_FILE: Supporting/MagicRightFinderSync-Info.plist
-        CODE_SIGN_ENTITLEMENTS: Supporting/MagicRightFinderSync.entitlements
+        INFOPLIST_FILE: Supporting/MagicActionsFinderSync-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Supporting/MagicActionsFinderSync.entitlements
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""

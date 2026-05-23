@@ -22,7 +22,7 @@ struct MenuAction: Identifiable, Hashable {
 enum MenuActionConfiguration {
     static let enabledIDsKey = "enabledMenuActionIDs"
     static let filename = "menu-actions.json"
-    static let extensionBundleIdentifier = "local.elidev.MagicRight.FinderSync"
+    static let extensionBundleIdentifier = "local.elidev.MagicActions.FinderSync"
 
     static var defaultEnabledIDs: Set<String> {
         Set(MenuAction.all.map(\.id))
@@ -57,7 +57,7 @@ enum MenuActionConfiguration {
             }
             try data.write(to: url, options: .atomic)
         } catch {
-            NSLog("[MagicRight] Failed to write menu configuration: \(error)")
+            NSLog("[MagicActions] Failed to write menu configuration: \(error)")
         }
     }
 }

@@ -23,7 +23,7 @@ final class FinderSyncExt: FIFinderSync {
         Service(id: "copy-path", title: "复制路径", filename: "copy_path.sh", symbol: "point.topleft.down.curvedto.point.bottomright.up", assetName: nil, allowsEmpty: false)
     ]
 
-    private static let logQueue = DispatchQueue(label: "local.elidev.MagicRight.findersync.log")
+    private static let logQueue = DispatchQueue(label: "local.elidev.MagicActions.findersync.log")
     private static let logMaxBytes: UInt64 = 1 * 1024 * 1024
     private var iconCache: [String: NSImage] = [:]
 
@@ -34,7 +34,7 @@ final class FinderSyncExt: FIFinderSync {
 
     override func menu(for menuKind: FIMenuKind) -> NSMenu {
         let menu = NSMenu(title: "")
-        let submenu = NSMenu(title: "MagicRight")
+        let submenu = NSMenu(title: "MagicActions")
 
         let appearance = NSAppearance.currentDrawing()
         let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
@@ -55,7 +55,7 @@ final class FinderSyncExt: FIFinderSync {
             submenu.addItem(item)
         }
 
-        let parent = NSMenuItem(title: "MagicRight", action: nil, keyEquivalent: "")
+        let parent = NSMenuItem(title: "MagicActions", action: nil, keyEquivalent: "")
         if let image = cachedSymbol("sparkles", color: tint, isDark: isDark) {
             parent.image = image
         }
@@ -140,8 +140,8 @@ final class FinderSyncExt: FIFinderSync {
     }
 
     private static func debugLog(_ message: String) {
-        NSLog("[MagicRight] \(message)")
-        let logPath = ("~/Library/Logs/magicright-findersync.log" as NSString)
+        NSLog("[MagicActions] \(message)")
+        let logPath = ("~/Library/Logs/magicactions-findersync.log" as NSString)
             .expandingTildeInPath
         let line = "[\(Date())] \(message)\n"
         guard let data = line.data(using: .utf8) else { return }

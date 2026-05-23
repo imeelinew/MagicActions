@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6C839BEBE9F8AF0A374124CD"
-               BuildableName = "MagicRight.app"
-               BlueprintName = "MagicRight"
-               ReferencedContainer = "container:MagicRight.xcodeproj">
+               BlueprintIdentifier = "B8AE9C272EBCE54E61FD08E3"
+               BuildableName = "MagicActions.app"
+               BlueprintName = "MagicActions"
+               ReferencedContainer = "container:MagicActions.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C839BEBE9F8AF0A374124CD"
-            BuildableName = "MagicRight.app"
-            BlueprintName = "MagicRight"
-            ReferencedContainer = "container:MagicRight.xcodeproj">
+            BlueprintIdentifier = "B8AE9C272EBCE54E61FD08E3"
+            BuildableName = "MagicActions.app"
+            BlueprintName = "MagicActions"
+            ReferencedContainer = "container:MagicActions.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -57,10 +57,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C839BEBE9F8AF0A374124CD"
-            BuildableName = "MagicRight.app"
-            BlueprintName = "MagicRight"
-            ReferencedContainer = "container:MagicRight.xcodeproj">
+            BlueprintIdentifier = "B8AE9C272EBCE54E61FD08E3"
+            BuildableName = "MagicActions.app"
+            BlueprintName = "MagicActions"
+            ReferencedContainer = "container:MagicActions.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -76,10 +76,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C839BEBE9F8AF0A374124CD"
-            BuildableName = "MagicRight.app"
-            BlueprintName = "MagicRight"
-            ReferencedContainer = "container:MagicRight.xcodeproj">
+            BlueprintIdentifier = "B8AE9C272EBCE54E61FD08E3"
+            BuildableName = "MagicActions.app"
+            BlueprintName = "MagicActions"
+            ReferencedContainer = "container:MagicActions.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>

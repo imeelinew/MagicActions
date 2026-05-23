@@ -1,11 +1,11 @@
-# MagicRight
+# MagicActions
 
-MagicRight is a native macOS menu bar host app plus Finder Sync extension for custom Finder context-menu actions.
+MagicActions is a native macOS menu bar host app plus Finder Sync extension for custom Finder context-menu actions.
 
 ## Targets
 
-- `MagicRight`: menu bar host app. It installs bundled scripts/templates into the Finder Sync Application Scripts directory and shows a minimal status-bar menu.
-- `MagicRightFinderSync`: Finder Sync extension. It exposes the `MagicRight` Finder context menu and launches action scripts with `NSUserUnixTask`.
+- `MagicActions`: menu bar host app. It installs bundled scripts/templates into the Finder Sync Application Scripts directory and shows a minimal status-bar menu.
+- `MagicActionsFinderSync`: Finder Sync extension. It exposes the `MagicActions` Finder context menu and launches action scripts with `NSUserUnixTask`.
 
 ## Build
 
@@ -13,7 +13,7 @@ Requirements:
 
 - macOS 26+
 - Xcode 26+
-- XcodeGen, when regenerating `MagicRight.xcodeproj` from `project.yml`
+- XcodeGen, when regenerating `MagicActions.xcodeproj` from `project.yml`
 
 Generate the Xcode project:
 
@@ -24,7 +24,7 @@ xcodegen generate
 Build:
 
 ```bash
-xcodebuild -project MagicRight.xcodeproj -scheme MagicRight -configuration Debug build
+xcodebuild -project MagicActions.xcodeproj -scheme MagicActions -configuration Debug build
 ```
 
 Build a local release bundle:
@@ -43,6 +43,6 @@ On first install, enable the Finder extension in System Settings -> Privacy & Se
 
 ## Runtime Paths
 
-- Scripts/templates: `~/Library/Application Scripts/local.elidev.MagicRight.FinderSync/`
-- Script log: `~/Library/Logs/magicright.log`
-- Finder Sync log: `~/Library/Logs/magicright-findersync.log`
+- Scripts/templates: `~/Library/Application Scripts/local.elidev.MagicActions.FinderSync/`
+- Script log: `~/Library/Logs/magicactions.log`
+- Finder Sync log: `~/Library/Logs/magicactions-findersync.log`

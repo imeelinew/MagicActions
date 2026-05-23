@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @MainActor
-final class MagicRightWindowController: NSObject, NSWindowDelegate {
+final class MagicActionsWindowController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
 
     func show() {
@@ -13,7 +13,7 @@ final class MagicRightWindowController: NSObject, NSWindowDelegate {
             return
         }
 
-        let hosting = NSHostingController(rootView: MagicRightView())
+        let hosting = NSHostingController(rootView: MagicActionsView())
         let win = NSWindow(contentViewController: hosting)
         let contentSize = NSSize(width: 720, height: 600)
         let minimumContentSize = NSSize(width: 650, height: 540)

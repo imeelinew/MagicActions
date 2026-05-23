@@ -1,13 +1,13 @@
 import AppKit
 import SwiftUI
 
-private let finderSyncBundleIdentifier = "local.elidev.MagicRight.FinderSync"
+private let finderSyncBundleIdentifier = "local.elidev.MagicActions.FinderSync"
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let notificationSeconds: TimeInterval = 5
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-    private lazy var mainWindowController = MagicRightWindowController()
+    private lazy var mainWindowController = MagicActionsWindowController()
     private let windowOperationManager = WindowOperationManager()
     private var notificationPopover: NSPopover?
     private var notificationDismissWorkItem: DispatchWorkItem?
@@ -36,15 +36,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let mainMenu = NSMenu(title: "MainMenu")
 
         let appMenuItem = NSMenuItem()
-        let appMenu = NSMenu(title: "MagicRight")
+        let appMenu = NSMenu(title: "MagicActions")
         appMenu.addItem(
-            withTitle: "关于 MagicRight",
+            withTitle: "关于 MagicActions",
             action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
             keyEquivalent: ""
         )
         appMenu.addItem(.separator())
         appMenu.addItem(
-            withTitle: "退出 MagicRight",
+            withTitle: "退出 MagicActions",
             action: #selector(quit),
             keyEquivalent: "q"
         )
@@ -68,18 +68,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let button = statusItem.button else { return }
         button.image = NSImage(
             systemSymbolName: "pointer.arrow.ipad.rays",
-            accessibilityDescription: "MagicRight"
-        ) ?? NSImage(systemSymbolName: "cursorarrow.rays", accessibilityDescription: "MagicRight")
+            accessibilityDescription: "MagicActions"
+        ) ?? NSImage(systemSymbolName: "cursorarrow.rays", accessibilityDescription: "MagicActions")
         button.image?.isTemplate = true
-        button.toolTip = "MagicRight"
+        button.toolTip = "MagicActions"
         statusItem.menu = makeMenu()
     }
 
     private func makeMenu() -> NSMenu {
-        let menu = NSMenu(title: "MagicRight")
+        let menu = NSMenu(title: "MagicActions")
 
         menu.addItem(
-            withTitle: "打开 MagicRight",
+            withTitle: "打开 MagicActions",
             action: #selector(showMainWindow),
             keyEquivalent: "o"
         )
@@ -93,7 +93,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func installApplicationScripts() {
         guard let resourceURL = Bundle.main.resourceURL else {
-            NSLog("[MagicRight] Missing bundle resources")
+            NSLog("[MagicActions] Missing bundle resources")
             return
         }
 
@@ -108,14 +108,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             try syncManagedDirectoryContents(from: templatesSource, to: scriptsDestination, executable: false)
             removeLegacyMoveState()
             MenuActionConfiguration.writeEnabledIDs(MenuActionConfiguration.enabledIDs())
-            NSLog("[MagicRight] Installed scripts to \(scriptsDestination.path)")
+            NSLog("[MagicActions] Installed scripts to \(scriptsDestination.path)")
         } catch {
-            NSLog("[MagicRight] Failed to install scripts: \(error)")
+            NSLog("[MagicActions] Failed to install scripts: \(error)")
         }
     }
 
     private var finderSyncExtensionURL: URL? {
-        Bundle.main.builtInPlugInsURL?.appendingPathComponent("MagicRightFinderSync.appex", isDirectory: true)
+        Bundle.main.builtInPlugInsURL?.appendingPathComponent("MagicActionsFinderSync.appex", isDirectory: true)
     }
 
     private func setFinderExtensionEnabled(_ isEnabled: Bool) {
@@ -124,7 +124,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         _ = runTool("/usr/bin/pluginkit", arguments: ["-e", isEnabled ? "use" : "ignore", "-i", finderSyncBundleIdentifier])
         if !isEnabled {
-            _ = runTool("/usr/bin/pkill", arguments: ["-f", "MagicRightFinderSync.appex"])
+            _ = runTool("/usr/bin/pkill", arguments: ["-f", "MagicActionsFinderSync.appex"])
         }
     }
 
@@ -146,7 +146,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             process.waitUntilExit()
             return process.terminationStatus == 0
         } catch {
-            NSLog("[MagicRight] Failed to run \(launchPath): \(error)")
+            NSLog("[MagicActions] Failed to run \(launchPath): \(error)")
             return false
         }
     }
@@ -154,7 +154,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func removeLegacyMoveState() {
         let stateDirectory = FileManager.default
             .homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/MagicRight", isDirectory: true)
+            .appendingPathComponent("Library/Application Support/MagicActions", isDirectory: true)
         try? FileManager.default.removeItem(at: stateDirectory)
     }
 
@@ -172,13 +172,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try FileManager.default.createDirectory(at: scriptsDirectoryURL, withIntermediateDirectories: true)
         } catch {
-            NSLog("[MagicRight] Failed to create scripts directory for popover watcher: \(error)")
+            NSLog("[MagicActions] Failed to create scripts directory for popover watcher: \(error)")
             return
         }
 
         eventDirectoryDescriptor = open(scriptsDirectoryURL.path, O_EVTONLY)
         guard eventDirectoryDescriptor >= 0 else {
-            NSLog("[MagicRight] Failed to watch popover event directory")
+            NSLog("[MagicActions] Failed to watch popover event directory")
             return
         }
 

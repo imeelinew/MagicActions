@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DERIVED_DATA_DIR="$ROOT_DIR/.build/DerivedData"
 DIST_DIR="$ROOT_DIR/.build/dist"
-APP_NAME="MagicRight"
+APP_NAME="MagicActions"
 APP_DIR="$DIST_DIR/$APP_NAME.app"
 
 cd "$ROOT_DIR"
