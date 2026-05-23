@@ -18,7 +18,6 @@ final class WindowOperationManager {
 
     private var eventHandler: EventHandlerRef?
     private var hotKeyRefs: [EventHotKeyRef?] = []
-    private var previousFrames: [String: WindowFrame] = [:]
 
     func start() {
         guard eventHandler == nil else { return }
@@ -73,7 +72,6 @@ final class WindowOperationManager {
             RemoveEventHandler(eventHandler)
         }
         eventHandler = nil
-        previousFrames.removeAll()
     }
 
     private func register(keyCode: UInt32, id: HotKey) {
@@ -104,7 +102,7 @@ final class WindowOperationManager {
         case .up:
             move(target, to: .maximized)
         case .down:
-            restore(target)
+            move(target, to: .centeredDefault)
         }
     }
 
@@ -112,6 +110,7 @@ final class WindowOperationManager {
         case leftHalf
         case rightHalf
         case maximized
+        case centeredDefault
     }
 
     private func move(_ target: WindowTarget, to layout: WindowLayout) {
@@ -136,15 +135,19 @@ final class WindowOperationManager {
                 position: CGPoint(x: screenFrame.minX, y: topLeftY(for: screenFrame)),
                 size: screenFrame.size
             )
+        case .centeredDefault:
+            let height = floor(screenFrame.height * 0.80)
+            let width = floor(min(screenFrame.width * 0.80, height * 1.25))
+            newFrame = WindowFrame(
+                position: CGPoint(
+                    x: screenFrame.minX + floor((screenFrame.width - width) / 2),
+                    y: screenFrame.minY + floor((screenFrame.height - height) / 2)
+                ),
+                size: CGSize(width: width, height: height)
+            )
         }
 
-        previousFrames[target.identifier] = currentFrame
         apply(newFrame, to: target.window)
-    }
-
-    private func restore(_ target: WindowTarget) {
-        guard let previousFrame = previousFrames.removeValue(forKey: target.identifier) else { return }
-        apply(previousFrame, to: target.window)
     }
 
     private struct WindowTarget {
@@ -253,7 +256,6 @@ private extension NSScreen {
     var globalTopLeftVisibleFrame: CGRect {
         guard let displayID else { return visibleFrame }
         let displayBounds = CGDisplayBounds(displayID)
-        let bottomInset = visibleFrame.minY - frame.minY
         let topInset = frame.maxY - visibleFrame.maxY
 
         return CGRect(
