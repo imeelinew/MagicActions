@@ -14,13 +14,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastPopoverEventContent = ""
     private var eventSource: DispatchSourceFileSystemObject?
     private var eventDirectoryDescriptor: CInt = -1
+    private var didDisableFinderExtensionForTermination = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
         installMainMenu()
         configureStatusItem()
         installApplicationScripts()
+        setFinderExtensionEnabled(true)
         startPopoverEventWatcher()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        disableFinderExtensionForTermination()
     }
 
     private func installMainMenu() {
@@ -102,6 +108,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSLog("[MagicRight] Installed scripts to \(scriptsDestination.path)")
         } catch {
             NSLog("[MagicRight] Failed to install scripts: \(error)")
+        }
+    }
+
+    private var finderSyncExtensionURL: URL? {
+        Bundle.main.builtInPlugInsURL?.appendingPathComponent("MagicRightFinderSync.appex", isDirectory: true)
+    }
+
+    private func setFinderExtensionEnabled(_ isEnabled: Bool) {
+        if isEnabled, let extensionURL = finderSyncExtensionURL {
+            _ = runTool("/usr/bin/pluginkit", arguments: ["-a", extensionURL.path])
+        }
+        _ = runTool("/usr/bin/pluginkit", arguments: ["-e", isEnabled ? "use" : "ignore", "-i", finderSyncBundleIdentifier])
+        if !isEnabled {
+            _ = runTool("/usr/bin/pkill", arguments: ["-f", "MagicRightFinderSync.appex"])
+        }
+    }
+
+    private func disableFinderExtensionForTermination() {
+        guard !didDisableFinderExtensionForTermination else { return }
+        didDisableFinderExtensionForTermination = true
+        setFinderExtensionEnabled(false)
+    }
+
+    private func runTool(_ launchPath: String, arguments: [String]) -> Bool {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: launchPath)
+        process.arguments = arguments
+        process.standardOutput = Pipe()
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+            return process.terminationStatus == 0
+        } catch {
+            NSLog("[MagicRight] Failed to run \(launchPath): \(error)")
+            return false
         }
     }
 
@@ -274,6 +317,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func quit() {
+        disableFinderExtensionForTermination()
         NSApp.terminate(nil)
     }
 }
