@@ -11,6 +11,7 @@
 		085C66135BDA2D7538377F23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB48C468D3EA3AE35B8ED719 /* Assets.xcassets */; };
 		2E7B8EB647AC8BADD72AB5F3 /* MagicRight.icon in Resources */ = {isa = PBXBuildFile; fileRef = C488B5D5D39641C35DB2D83D /* MagicRight.icon */; };
 		3CF60418FBB425DE1265DB11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D284C6F007745B0E9645D7 /* AppDelegate.swift */; };
+		3D5EF6FB80D0A0292E3E0E22 /* WindowOperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AE2827BA8F72074880B5B5 /* WindowOperationManager.swift */; };
 		5C18A71E692CAFB978F50239 /* MagicRightWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70674DEF14A4058329AC6AEF /* MagicRightWindowController.swift */; };
 		5CB808BBF77533791FF5AD53 /* MagicRightFinderSync.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9BB2866BC6FDBD084B36BE12 /* MagicRightFinderSync.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5E55EB5FDA06B71FB58195E3 /* MenuBarNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF586B5EC93F3EE5170A5A1 /* MenuBarNotificationView.swift */; };
@@ -19,6 +20,7 @@
 		95401E7378696CDFCAB3B76F /* MagicRightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570C2A6A31BCAD0BB1B7C2F1 /* MagicRightView.swift */; };
 		A956D7BEB4A380DA2A07306C /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EE04436D5CF84663796FAF /* FinderSyncExt.swift */; };
 		BBB4D5BBAE64D26A82722008 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = B4DF337A063CE525F5578714 /* Templates */; };
+		D47D3829DB16B3029783239D /* PermissionFlow in Frameworks */ = {isa = PBXBuildFile; productRef = 4AABD6A18660296FAAC19DF7 /* PermissionFlow */; };
 		DF69FDB74A785CE1DDE9466E /* WindowBackgroundBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */; };
 		FE7E1718AC968985559A4C90 /* MenuActionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64958F20322C2712EA1D017C /* MenuActionConfiguration.swift */; };
 /* End PBXBuildFile section */
@@ -49,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		2DF586B5EC93F3EE5170A5A1 /* MenuBarNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarNotificationView.swift; sourceTree = "<group>"; };
+		41AE2827BA8F72074880B5B5 /* WindowOperationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowOperationManager.swift; sourceTree = "<group>"; };
 		50BDCA36A0FB14184EDE7A7A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		570C2A6A31BCAD0BB1B7C2F1 /* MagicRightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRightView.swift; sourceTree = "<group>"; };
 		5E6718CB9DF585C9133FC300 /* MagicRight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagicRight.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,9 +63,21 @@
 		B4DF337A063CE525F5578714 /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Templates; path = Resources/Templates; sourceTree = SOURCE_ROOT; };
 		C488B5D5D39641C35DB2D83D /* MagicRight.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = MagicRight.icon; sourceTree = "<group>"; };
 		C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBackgroundBlur.swift; sourceTree = "<group>"; };
+		D69FA0A1D4981892B13140EA /* PermissionFlow */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PermissionFlow; path = Vendor/PermissionFlow; sourceTree = SOURCE_ROOT; };
 		DB48C468D3EA3AE35B8ED719 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E6EE04436D5CF84663796FAF /* FinderSyncExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSyncExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9E37ACD4F3B027BE6D9FA00D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D47D3829DB16B3029783239D /* PermissionFlow in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		3EE35A68A6435B2D0D1DA4B7 /* MagicRightFinderSync */ = {
@@ -101,9 +116,18 @@
 				64958F20322C2712EA1D017C /* MenuActionConfiguration.swift */,
 				2DF586B5EC93F3EE5170A5A1 /* MenuBarNotificationView.swift */,
 				C89F614F631F383DE91BD72C /* WindowBackgroundBlur.swift */,
+				41AE2827BA8F72074880B5B5 /* WindowOperationManager.swift */,
 			);
 			name = MagicRight;
 			path = Sources/MagicRight;
+			sourceTree = "<group>";
+		};
+		85C9AB4E96678298C89FA3C0 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				D69FA0A1D4981892B13140EA /* PermissionFlow */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		9375F6096300886AC91A78BE /* Resources */ = {
@@ -122,6 +146,7 @@
 				6124F3DD817F35EC5B90A1F4 /* icon */,
 				6EBD6A287E6769CF5BB9A9E2 /* MagicRight */,
 				3EE35A68A6435B2D0D1DA4B7 /* MagicRightFinderSync */,
+				85C9AB4E96678298C89FA3C0 /* Packages */,
 				9375F6096300886AC91A78BE /* Resources */,
 				509A2C2E636206CE96B9BD23 /* Products */,
 			);
@@ -154,6 +179,7 @@
 			buildPhases = (
 				90CEFF9C8DE44611C8A74EE6 /* Sources */,
 				5C97D453D00838EA0A6CB84F /* Resources */,
+				9E37ACD4F3B027BE6D9FA00D /* Frameworks */,
 				B3EA46FC4506A9F63FB6A5D3 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -163,6 +189,7 @@
 			);
 			name = MagicRight;
 			packageProductDependencies = (
+				4AABD6A18660296FAAC19DF7 /* PermissionFlow */,
 			);
 			productName = MagicRight;
 			productReference = 5E6718CB9DF585C9133FC300 /* MagicRight.app */;
@@ -196,6 +223,9 @@
 			);
 			mainGroup = EA4584086D803DB4DC7C20DE;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F6E7E6B5B0275AA7D4AAADC2 /* XCLocalSwiftPackageReference "Vendor/PermissionFlow" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 509A2C2E636206CE96B9BD23 /* Products */;
 			projectDirPath = "";
@@ -248,6 +278,7 @@
 				FE7E1718AC968985559A4C90 /* MenuActionConfiguration.swift in Sources */,
 				5E55EB5FDA06B71FB58195E3 /* MenuBarNotificationView.swift in Sources */,
 				DF69FDB74A785CE1DDE9466E /* WindowBackgroundBlur.swift in Sources */,
+				3D5EF6FB80D0A0292E3E0E22 /* WindowOperationManager.swift in Sources */,
 				042D6BDF00481CEC1348E7DC /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,6 +528,20 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F6E7E6B5B0275AA7D4AAADC2 /* XCLocalSwiftPackageReference "Vendor/PermissionFlow" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Vendor/PermissionFlow;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4AABD6A18660296FAAC19DF7 /* PermissionFlow */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PermissionFlow;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AEDC6DC842B79942B494D8E1 /* Project object */;
 }

@@ -61,3 +61,22 @@ enum MenuActionConfiguration {
         }
     }
 }
+
+enum WindowOperationConfiguration {
+    static let isEnabledKey = "windowOperationsEnabled"
+
+    static var defaultIsEnabled: Bool {
+        true
+    }
+
+    static func isEnabled() -> Bool {
+        guard UserDefaults.standard.object(forKey: isEnabledKey) != nil else {
+            return defaultIsEnabled
+        }
+        return UserDefaults.standard.bool(forKey: isEnabledKey)
+    }
+
+    static func setEnabled(_ isEnabled: Bool) {
+        UserDefaults.standard.set(isEnabled, forKey: isEnabledKey)
+    }
+}

@@ -1,8 +1,11 @@
+import AppKit
+import PermissionFlow
 import SwiftUI
 
 struct MagicRightView: View {
     @State private var selection: SettingsPage? = .contextMenu
     @State private var enabledActionIDs = MenuActionConfiguration.enabledIDs()
+    @State private var windowOperationsEnabled = WindowOperationConfiguration.isEnabled()
     @State private var searchText = ""
     private let sidebarIconTileSize: Double = 22
     private let sidebarIconSymbolSize: Double = 11
@@ -10,42 +13,59 @@ struct MagicRightView: View {
 
     enum SettingsPage: String, CaseIterable, Hashable, Identifiable {
         case contextMenu
+        case windowOperations
 
         var id: String { rawValue }
-        var title: String { "右键菜单" }
-        var symbolName: String { "contextualmenu.and.cursorarrow" }
+        var title: String {
+            switch self {
+            case .contextMenu:
+                return "右键菜单"
+            case .windowOperations:
+                return "窗口操作"
+            }
+        }
+
+        var symbolName: String {
+            switch self {
+            case .contextMenu:
+                return "contextualmenu.and.cursorarrow"
+            case .windowOperations:
+                return "rectangle.on.rectangle"
+            }
+        }
+
         var iconGradient: LinearGradient {
-            LinearGradient(
-                colors: [Color(red: 1.0, green: 0.50, blue: 0.40), Color(red: 0.96, green: 0.28, blue: 0.24)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            switch self {
+            case .contextMenu:
+                return LinearGradient(
+                    colors: [Color(red: 1.0, green: 0.50, blue: 0.40), Color(red: 0.96, green: 0.28, blue: 0.24)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            case .windowOperations:
+                return LinearGradient(
+                    colors: [Color(red: 0.28, green: 0.52, blue: 0.98), Color(red: 0.16, green: 0.34, blue: 0.78)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
         }
     }
 
     var body: some View {
         NavigationSplitView {
             List(selection: $selection) {
-                NavigationLink(value: SettingsPage.contextMenu) {
-                    SidebarPageLabel(page: .contextMenu)
+                ForEach(SettingsPage.allCases) { page in
+                    NavigationLink(value: page) {
+                        SidebarPageLabel(page: page)
+                    }
                 }
             }
             .navigationTitle("设置")
             .navigationSplitViewColumnWidth(min: 150, ideal: 180)
         } detail: {
             NavigationStack {
-                Form {
-                    Section("右键显示选项") {
-                        ForEach(filteredActions) { action in
-                            Toggle(isOn: binding(for: action)) {
-                                HStack(spacing: 10) {
-                                    MenuActionIcon(actionID: action.id, size: 24)
-                                    Text(action.title)
-                                }
-                            }
-                        }
-                    }
-                }
+                detailContent
                 .formStyle(.grouped)
                 .settingsContentMargins()
                 .scrollContentBackground(.hidden)
@@ -68,6 +88,40 @@ struct MagicRightView: View {
         }
         .onChange(of: enabledActionIDs) { _, _ in
             persistEnabledActions()
+        }
+        .onChange(of: windowOperationsEnabled) { _, isEnabled in
+            WindowOperationConfiguration.setEnabled(isEnabled)
+        }
+    }
+
+    @ViewBuilder
+    private var detailContent: some View {
+        switch selection ?? .contextMenu {
+        case .contextMenu:
+            Form {
+                Section("右键显示选项") {
+                    ForEach(filteredActions) { action in
+                        Toggle(isOn: binding(for: action)) {
+                            HStack(spacing: 10) {
+                                MenuActionIcon(actionID: action.id, size: 24)
+                                Text(action.title)
+                            }
+                        }
+                    }
+                }
+            }
+        case .windowOperations:
+            Form {
+                Section("窗口操作") {
+                    Toggle("启用窗口操作", isOn: $windowOperationsEnabled)
+                }
+
+                if windowOperationsEnabled {
+                    Section("权限") {
+                        AccessibilityPermissionRow()
+                    }
+                }
+            }
         }
     }
 
@@ -95,6 +149,58 @@ struct MagicRightView: View {
     private func persistEnabledActions() {
         MenuActionConfiguration.setEnabledIDs(enabledActionIDs)
         MenuActionConfiguration.writeEnabledIDs(enabledActionIDs)
+    }
+}
+
+private struct AccessibilityPermissionRow: View {
+    @StateObject private var controller = PermissionFlow.makeController(
+        configuration: .init(localeIdentifier: "zh-Hans")
+    )
+    @State private var authorizationState = PermissionStatusRegistry.provider(for: .accessibility).authorizationState()
+
+    private let statusTimer = Timer.publish(every: 0.75, on: .main, in: .common).autoconnect()
+
+    private var statusTitle: String {
+        authorizationState == .granted ? "已申请" : "未申请"
+    }
+
+    var body: some View {
+        HStack {
+            Button("申请无障碍权限") {
+                controller.authorize(
+                    pane: .accessibility,
+                    suggestedAppURLs: [Bundle.main.bundleURL],
+                    sourceFrameInScreen: clickSourceFrameInScreen()
+                )
+                refreshAuthorizationState()
+            }
+
+            Spacer()
+
+            Text(statusTitle)
+                .foregroundStyle(.secondary)
+        }
+        .onAppear(perform: refreshAuthorizationState)
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            refreshAuthorizationState()
+        }
+        .onReceive(statusTimer) { _ in
+            refreshAuthorizationState()
+        }
+    }
+
+    private func refreshAuthorizationState() {
+        let latestState = PermissionStatusRegistry.provider(for: .accessibility).authorizationState()
+        authorizationState = latestState
+
+        if latestState == .granted {
+            controller.closePanel(returnToPreviousApp: true)
+        }
+    }
+
+    private func clickSourceFrameInScreen() -> CGRect {
+        let mouseLocation = NSEvent.mouseLocation
+        return CGRect(x: mouseLocation.x - 16, y: mouseLocation.y - 16, width: 32, height: 32)
     }
 }
 

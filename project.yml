@@ -8,6 +8,10 @@ settings:
     SWIFT_VERSION: "6.0"
     MACOSX_DEPLOYMENT_TARGET: "26.0"
 
+packages:
+  PermissionFlow:
+    path: Vendor/PermissionFlow
+
 targets:
   MagicRight:
     type: application
@@ -24,6 +28,7 @@ targets:
       - target: MagicRightFinderSync
         embed: true
         codeSign: true
+      - package: PermissionFlow
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: local.elidev.MagicRight

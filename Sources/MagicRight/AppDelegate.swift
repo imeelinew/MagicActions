@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let notificationSeconds: TimeInterval = 5
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private lazy var mainWindowController = MagicRightWindowController()
+    private let windowOperationManager = WindowOperationManager()
     private var notificationPopover: NSPopover?
     private var notificationDismissWorkItem: DispatchWorkItem?
     private var eventReadWorkItem: DispatchWorkItem?
@@ -22,10 +23,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configureStatusItem()
         installApplicationScripts()
         setFinderExtensionEnabled(true)
+        windowOperationManager.start()
         startPopoverEventWatcher()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        windowOperationManager.stop()
         disableFinderExtensionForTermination()
     }
 
