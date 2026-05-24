@@ -8,6 +8,7 @@ struct MagicActionsView: View {
     @State private var enabledActionIDs = MenuActionConfiguration.enabledIDs()
     @State private var windowOperationsEnabled = WindowOperationConfiguration.isEnabled()
     @State private var enabledWindowOperationIDs = WindowOperationConfiguration.enabledIDs()
+    @State private var showsNetworkSpeed = MenuBarConfiguration.showsNetworkSpeed()
     @State private var contextMenuSearchText = ""
     @State private var windowOperationsSearchText = ""
     @State private var menuBarSearchText = ""
@@ -141,6 +142,7 @@ struct MagicActionsView: View {
         .onAppear {
             persistEnabledActions()
             persistEnabledWindowOperations()
+            persistMenuBarConfiguration()
         }
         .onChange(of: contextMenuEnabled) { _, _ in
             persistEnabledActions()
@@ -153,6 +155,9 @@ struct MagicActionsView: View {
         }
         .onChange(of: enabledWindowOperationIDs) { _, _ in
             persistEnabledWindowOperations()
+        }
+        .onChange(of: showsNetworkSpeed) { _, _ in
+            persistMenuBarConfiguration()
         }
     }
 
@@ -204,7 +209,11 @@ struct MagicActionsView: View {
                 }
             }
         case .menuBar:
-            Form {}
+            Form {
+                Section("总开关") {
+                    Toggle("显示实时网速", isOn: $showsNetworkSpeed)
+                }
+            }
         }
     }
 
@@ -259,6 +268,10 @@ struct MagicActionsView: View {
     private func persistEnabledWindowOperations() {
         WindowOperationConfiguration.setEnabled(windowOperationsEnabled)
         WindowOperationConfiguration.setEnabledIDs(enabledWindowOperationIDs)
+    }
+
+    private func persistMenuBarConfiguration() {
+        MenuBarConfiguration.setShowsNetworkSpeed(showsNetworkSpeed)
     }
 }
 

@@ -17,6 +17,7 @@
 		51CC8AA9058EDF0C801FB20A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44390B7231C00DA0D5070EF1 /* Assets.xcassets */; };
 		5A2A16916D94DBA271F6E5EC /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE8B2015042D0EF41035739 /* FinderSyncExt.swift */; };
 		5F2817294D80CABF14D547CC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9E764DCCA4225019A486EE /* main.swift */; };
+		662C7384E5FB5E59EC7CD3E4 /* NetworkSpeedMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FB8D663BF9200A5E29B49B /* NetworkSpeedMonitor.swift */; };
 		75A71C680951ACF56D693CB1 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = F1416B56BE72416B7296458D /* Templates */; };
 		7C9BC5B55A2CBD4DA8067B75 /* MagicActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB4F973BDD944839EF10098 /* MagicActionsView.swift */; };
 		86E2D1D13E8E8C8B4B16B796 /* WindowOperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8AF899628A3AB9C1291DBE /* WindowOperationManager.swift */; };
@@ -61,6 +62,7 @@
 		6BFC5E4B364F05478EC1A924 /* MagicActions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagicActions.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB4F973BDD944839EF10098 /* MagicActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicActionsView.swift; sourceTree = "<group>"; };
 		74FFD4873927B704C307D993 /* MagicActionsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicActionsWindowController.swift; sourceTree = "<group>"; };
+		92FB8D663BF9200A5E29B49B /* NetworkSpeedMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSpeedMonitor.swift; sourceTree = "<group>"; };
 		9BE8B2015042D0EF41035739 /* FinderSyncExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSyncExt.swift; sourceTree = "<group>"; };
 		A12978ED2BC4D1188F5FCCF6 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = Resources/Scripts; sourceTree = SOURCE_ROOT; };
 		E5BB16785A1A27FE6FCD4E87 /* PermissionFlow */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PermissionFlow; path = Vendor/PermissionFlow; sourceTree = SOURCE_ROOT; };
@@ -129,6 +131,7 @@
 				EB9E764DCCA4225019A486EE /* main.swift */,
 				44BC91B9986456377A77FBA4 /* MenuActionConfiguration.swift */,
 				425DC80F77B606839237A1B6 /* MenuBarNotificationView.swift */,
+				92FB8D663BF9200A5E29B49B /* NetworkSpeedMonitor.swift */,
 				1C92C07C594672002D80C703 /* WindowBackgroundBlur.swift */,
 				0F8AF899628A3AB9C1291DBE /* WindowOperationManager.swift */,
 			);
@@ -277,6 +280,7 @@
 				271A5AE0398AA880B2C3B289 /* MagicActionsWindowController.swift in Sources */,
 				503FE04D6F6FA2A5390D5722 /* MenuActionConfiguration.swift in Sources */,
 				0C90CE45887820BC3E2E35F4 /* MenuBarNotificationView.swift in Sources */,
+				662C7384E5FB5E59EC7CD3E4 /* NetworkSpeedMonitor.swift in Sources */,
 				42ADFD390393F5AE3B93DB70 /* WindowBackgroundBlur.swift in Sources */,
 				86E2D1D13E8E8C8B4B16B796 /* WindowOperationManager.swift in Sources */,
 				5F2817294D80CABF14D547CC /* main.swift in Sources */,

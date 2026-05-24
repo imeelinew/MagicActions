@@ -122,6 +122,25 @@ enum WindowOperationConfiguration {
     }
 }
 
+enum MenuBarConfiguration {
+    static let showsNetworkSpeedKey = "menuBarShowsNetworkSpeed"
+
+    static var defaultShowsNetworkSpeed: Bool {
+        false
+    }
+
+    static func showsNetworkSpeed() -> Bool {
+        guard UserDefaults.standard.object(forKey: showsNetworkSpeedKey) != nil else {
+            return defaultShowsNetworkSpeed
+        }
+        return UserDefaults.standard.bool(forKey: showsNetworkSpeedKey)
+    }
+
+    static func setShowsNetworkSpeed(_ showsNetworkSpeed: Bool) {
+        UserDefaults.standard.set(showsNetworkSpeed, forKey: showsNetworkSpeedKey)
+    }
+}
+
 struct WindowOperation: Identifiable, Hashable {
     let id: String
     let title: String

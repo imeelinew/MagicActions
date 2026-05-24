@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private lazy var mainWindowController = MagicActionsWindowController()
     private let windowOperationManager = WindowOperationManager()
+    private let networkSpeedMonitor = NetworkSpeedMonitor()
     private var notificationPopover: NSPopover?
     private var notificationDismissWorkItem: DispatchWorkItem?
     private var eventReadWorkItem: DispatchWorkItem?
@@ -17,6 +18,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var eventDirectoryDescriptor: CInt = -1
     private var didDisableFinderExtensionForTermination = false
     private var defaultsObserver: NSObjectProtocol?
+    private var isShowingNetworkSpeed = false
+    private var currentNetworkSpeedSample = NetworkSpeedSample(uploadBytesPerSecond: 0, downloadBytesPerSecond: 0)
+    private var networkSpeedContentView: NSView?
+    private var networkSpeedLabel: NSTextField?
+    private var networkSpeedImageView: NSImageView?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -33,6 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if let defaultsObserver {
             NotificationCenter.default.removeObserver(defaultsObserver)
         }
+        networkSpeedMonitor.stop()
         windowOperationManager.stop()
         disableFinderExtensionForTermination()
     }
@@ -70,14 +77,154 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func configureStatusItem() {
+        networkSpeedMonitor.onUpdate = { [weak self] sample in
+            self?.currentNetworkSpeedSample = sample
+            self?.refreshStatusItemButton()
+        }
+        refreshStatusItemConfiguration()
+        statusItem.menu = makeMenu()
+    }
+
+    private func refreshStatusItemConfiguration() {
+        let shouldShowNetworkSpeed = MenuBarConfiguration.showsNetworkSpeed()
+        guard shouldShowNetworkSpeed != isShowingNetworkSpeed else {
+            refreshStatusItemButton()
+            return
+        }
+
+        isShowingNetworkSpeed = shouldShowNetworkSpeed
+        if shouldShowNetworkSpeed {
+            networkSpeedMonitor.start()
+        } else {
+            networkSpeedMonitor.stop()
+            currentNetworkSpeedSample = .init(uploadBytesPerSecond: 0, downloadBytesPerSecond: 0)
+        }
+        refreshStatusItemButton()
+    }
+
+    private func refreshStatusItemButton() {
         guard let button = statusItem.button else { return }
-        button.image = NSImage(
+        button.toolTip = "MagicActions"
+
+        if isShowingNetworkSpeed {
+            let title = networkSpeedTitle(for: currentNetworkSpeedSample)
+            installNetworkSpeedButtonContent(in: button, title: title)
+            statusItem.length = networkSpeedButtonWidth(for: title)
+        } else {
+            removeNetworkSpeedButtonContent()
+            button.image = statusIcon()
+            button.image?.isTemplate = true
+            button.imagePosition = .imageOnly
+            button.attributedTitle = NSAttributedString(string: "")
+            statusItem.length = NSStatusItem.variableLength
+        }
+    }
+
+    private func statusIcon() -> NSImage? {
+        NSImage(
             systemSymbolName: "pointer.arrow.ipad.rays",
             accessibilityDescription: "MagicActions"
         ) ?? NSImage(systemSymbolName: "cursorarrow.rays", accessibilityDescription: "MagicActions")
-        button.image?.isTemplate = true
-        button.toolTip = "MagicActions"
-        statusItem.menu = makeMenu()
+    }
+
+    private func networkSpeedTitle(for sample: NetworkSpeedSample) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        paragraphStyle.minimumLineHeight = 8
+        paragraphStyle.maximumLineHeight = 8
+        paragraphStyle.lineBreakMode = .byClipping
+
+        return NSAttributedString(
+            string: "\(formatNetworkSpeed(sample.uploadBytesPerSecond))\n\(formatNetworkSpeed(sample.downloadBytesPerSecond))",
+            attributes: [
+                .font: NSFont.monospacedDigitSystemFont(ofSize: 8.5, weight: .regular),
+                .foregroundColor: NSColor.black,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+    }
+
+    private func installNetworkSpeedButtonContent(in button: NSStatusBarButton, title: NSAttributedString) {
+        button.image = nil
+        button.attributedTitle = NSAttributedString(string: "")
+
+        let contentView: NSView
+        let label: NSTextField
+        let imageView: NSImageView
+        if let existingContentView = networkSpeedContentView,
+           let existingLabel = networkSpeedLabel,
+           let existingImageView = networkSpeedImageView {
+            contentView = existingContentView
+            label = existingLabel
+            imageView = existingImageView
+        } else {
+            label = NSTextField(labelWithAttributedString: title)
+            label.alignment = .center
+            label.maximumNumberOfLines = 2
+            label.lineBreakMode = .byClipping
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            imageView = NSImageView(image: statusIcon() ?? NSImage())
+            imageView.symbolConfiguration = .init(pointSize: 18, weight: .regular)
+            imageView.imageScaling = .scaleProportionallyUpOrDown
+            imageView.contentTintColor = .labelColor
+            imageView.setContentHuggingPriority(.required, for: .horizontal)
+            imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+
+            contentView = NSView()
+            contentView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(label)
+            contentView.addSubview(imageView)
+            button.addSubview(contentView)
+            NSLayoutConstraint.activate([
+                contentView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                contentView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 1),
+                imageView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 7),
+                imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+                imageView.widthAnchor.constraint(equalToConstant: 18),
+                imageView.heightAnchor.constraint(equalToConstant: 18)
+            ])
+
+            networkSpeedContentView = contentView
+            networkSpeedLabel = label
+            networkSpeedImageView = imageView
+        }
+
+        label.attributedStringValue = title
+        label.invalidateIntrinsicContentSize()
+        imageView.image = statusIcon()
+        imageView.image?.isTemplate = true
+        contentView.isHidden = false
+    }
+
+    private func removeNetworkSpeedButtonContent() {
+        networkSpeedContentView?.removeFromSuperview()
+        networkSpeedContentView = nil
+        networkSpeedLabel = nil
+        networkSpeedImageView = nil
+    }
+
+    private func networkSpeedButtonWidth(for title: NSAttributedString) -> CGFloat {
+        ceil(title.size().width) + 18 + 7 + 8
+    }
+
+    private func formatNetworkSpeed(_ bytesPerSecond: UInt64) -> String {
+        let units = ["B/s", "KB/s", "MB/s", "GB/s"]
+        var value = Double(bytesPerSecond)
+        var unitIndex = 0
+        while value >= 1024, unitIndex < units.count - 1 {
+            value /= 1024
+            unitIndex += 1
+        }
+
+        if value.rounded(.down) == value || value >= 100 {
+            return "\(Int(value)) \(units[unitIndex])"
+        }
+        return "\(String(format: "%.1f", value)) \(units[unitIndex])"
     }
 
     private func observeDefaultsChanges() {
@@ -88,6 +235,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ) { [weak self] _ in
             Task { @MainActor in
                 self?.statusItem.menu = self?.makeMenu()
+                self?.refreshStatusItemConfiguration()
             }
         }
     }
