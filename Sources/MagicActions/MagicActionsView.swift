@@ -61,25 +61,25 @@ struct MagicActionsView: View {
             switch self {
             case .contextMenu:
                 return LinearGradient(
-                    colors: [Color(red: 1.0, green: 0.50, blue: 0.40), Color(red: 0.96, green: 0.28, blue: 0.24)],
+                    colors: [Color(red: 1.0, green: 0.62, blue: 0.48), Color(red: 1.0, green: 0.32, blue: 0.22)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             case .windowOperations:
                 return LinearGradient(
-                    colors: [Color(red: 0.28, green: 0.52, blue: 0.98), Color(red: 0.16, green: 0.34, blue: 0.78)],
+                    colors: [Color(red: 0.48, green: 0.76, blue: 1.0), Color(red: 0.18, green: 0.48, blue: 1.0)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             case .menuBar:
                 return LinearGradient(
-                    colors: [Color(red: 0.32, green: 0.68, blue: 0.58), Color(red: 0.10, green: 0.48, blue: 0.42)],
+                    colors: [Color(red: 0.38, green: 0.92, blue: 0.74), Color(red: 0.06, green: 0.76, blue: 0.58)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             case .inputCorrection:
                 return LinearGradient(
-                    colors: [Color(red: 0.60, green: 0.42, blue: 0.88), Color(red: 0.28, green: 0.48, blue: 0.88)],
+                    colors: [Color(red: 0.82, green: 0.54, blue: 1.0), Color(red: 0.42, green: 0.34, blue: 0.98)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
